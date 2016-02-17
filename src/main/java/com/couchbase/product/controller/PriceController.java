@@ -63,18 +63,18 @@ import rx.functions.Func1;
  * @since 1.0
  */
 @RestController
-public class ProductController {
+public class PriceController {
 	
-	private static final Logger LOGGER =  LoggerFactory.getLogger(ProductController.class);
+	private static final Logger LOGGER =  LoggerFactory.getLogger(PriceController.class);
 
     private final CouchbaseService couchbaseService;
 
     @Autowired
-    public ProductController(CouchbaseService couchbaseService) {
+    public PriceController(CouchbaseService couchbaseService) {
         this.couchbaseService = couchbaseService;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/product/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, value = "/price/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getProduct(@PathVariable String id) {
         JsonDocument doc = couchbaseService.read(id);
         if (doc != null) {
@@ -84,7 +84,7 @@ public class ProductController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/product/create")
+    @RequestMapping(method = RequestMethod.POST, value = "/price/create")
     public ResponseEntity<String> createProduct1() {
     	LOGGER.info("createProduct1");
     	Map<String, Object> beerData = new HashMap<String, Object>();
@@ -106,7 +106,7 @@ public class ProductController {
     }
     
     
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,value = "/product")
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE,value = "/price")
     public ResponseEntity<String> createProduct(@RequestBody Map<String, Object> beerData) {
     	LOGGER.debug("createProduct");
     	LOGGER.info("createProduct");
@@ -126,13 +126,13 @@ public class ProductController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/product/{productId}")
+    @RequestMapping(method = RequestMethod.DELETE, value = "/price/{productId}")
     public ResponseEntity<String> deleteProduct(@PathVariable String beerId) {
         JsonDocument deleted = couchbaseService.delete(beerId);
         return new ResponseEntity<String>(""+deleted.cas(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/product/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.PUT)
+    @RequestMapping(value = "/price/{productId}", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.PUT)
     public ResponseEntity<String> updateProduct(@PathVariable String beerId, @RequestBody Map<String, Object> beerData) {
         try {
             JsonObject beer = parseProducts(beerData);
@@ -161,7 +161,7 @@ public class ProductController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,value = "/product")
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE,value = "/price")
     public ResponseEntity<String> listProducts(@RequestParam(required = false) Integer offset,
             @RequestParam(required = false) Integer limit) {
         ViewResult result = couchbaseService.findAllBeers(offset, limit);
@@ -182,7 +182,7 @@ public class ProductController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/product/search/{token}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, value = "/price/search/{token}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> searchProduct(@PathVariable final String token) {
         //we'll get all beers asynchronously and compose on the stream to extract those that match
         AsyncViewResult viewResult = couchbaseService.findAllBeersAsync().toBlocking().single();
